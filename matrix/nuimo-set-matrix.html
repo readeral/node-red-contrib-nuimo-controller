@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nuimo-set-matrix', {
+        category: 'advanced',
+        color: '#C0C0C0',
+        defaults: {
+            name: { value: "" },
+            matrix: {value: "0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0"},
+            brightness: { value: 255, validate:RED.validators.number()},
+            timeout: { value: 2000, validate:RED.validators.number()},
+            onionSkinning: { value: true },
+            nuimoConfig: {type:"nuimo-config", required:true}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "hash.png",
+        label: function() {
+            return this.name || "Nuimo matrix";
+        },
+        paletteLabel: "Nuimo matrix"
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nuimo-set-matrix">
+    <div class="form-row">
+        <label>Config</label>
+        <input type="text" id="node-input-nuimoConfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-matrix"><i class="icon-tag"></i> Matrix</label>
+        <input type="text" id="node-input-matrix" placeholder="0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0">
+    </div>
+    <div class="form-row">
+        <label for="node-input-brightness"><i class="icon-tag"></i> Brightness (0-255)</label>
+        <input type="text" id="node-input-brightness" placeholder="255">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeout"><i class="icon-tag"></i> Timeout</label>
+        <input type="text" id="node-input-timeout" placeholder="2000">
+    </div>
+    <div class="form-row">
+        <label for="node-input-onionSkinning"><i class="icon-tag"></i> Smooth transition</label>
+        <input type="checkbox" id="node-input-onionSkinning">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nuimo-set-matrix">
+    <p>A node for creating a matrix to pass through to the Nuimo output node. The matrix value is passed via msg.setMatrix property</p>
+</script>

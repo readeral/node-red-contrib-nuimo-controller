@@ -1,0 +1,32 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nuimo-listener', {
+        category: 'advanced',
+        color: '#C0C0C0',
+        defaults: {
+            name: { value: ""},
+            nuimoConfig: {type: "nuimo-config", required:true}
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "apple-touch-icon.png",
+        label: function() {
+            return this.name || "Nuimo listener";
+        },
+        paletteLabel: "Nuimo listener"
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nuimo-listener">
+    <div class="form-row">
+        <label for="node-input-nuimoConfig">Config</label>
+        <input type="text" id="node-input-nuimoConfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nuimo-listener">
+    <p>A Node-RED node that uses nuimojs and Noble to interact with nuimo devices</p>
+</script>

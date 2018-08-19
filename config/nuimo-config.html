@@ -1,0 +1,16 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nuimo-config',{
+        category: 'config',
+        defaults: {
+            name: {value: ""}
+        }
+    });
+</script>
+
+<script type="text/x-red"
+  data-template-name="nuimo-config">
+    <div class="form-row">
+        <label><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+</script>
