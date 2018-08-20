@@ -10,7 +10,25 @@ module.exports = function(RED) {
 
       var node = this;
 
+
+
       nuimo.on("discover", (device) => {
+        node.testFunction = () => {
+          console.log("testFunction");
+        }
+        node.writeMatrix = (instructions) => {
+          console.log(instructions);
+          device.setLEDMatrix([0, 0, 0, 0, 1, 0, 0, 0, 0,
+                              0, 0, 0, 1, 0, 1, 0, 0, 0,
+                               0, 0, 1, 0, 0, 0, 1, 0, 0,
+                                0, 1, 0, 0, 0, 0, 0, 1, 0,
+                                 1, 0, 0, 0, 0, 0, 0, 0, 1,
+                                  0, 1, 0, 0, 0, 0, 0, 1, 0,
+                                   0, 0, 1, 0, 0, 0, 1, 0, 0,
+                                    0, 0, 0, 1, 0, 1, 0, 0, 0,
+                                     0, 0, 0, 0, 1, 0, 0, 0, 0],
+                                      instructions.brightness, instructions.timeout, instructions.options);
+        }
         device.on("connect", () => {
           node.warn("Nuimo connected");
           node.emit('connected',device.batteryLevel);
@@ -36,10 +54,6 @@ module.exports = function(RED) {
                     0, 0, 0, 0, 0, 0, 0, 0, 0
                 ], 255, 2000);
         });
-
-        this.writeMatrix = (instructions) => {
-          device.setLEDMatrix(instructions.ledArray, instructions.brightness, instructions.timeout, instructions.options);
-        }
 
         device.connect();
       });

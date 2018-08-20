@@ -21,10 +21,8 @@ module.exports = function(RED) {
 
     var node = this;
     this.on('input', function(msg) {
-      let instructions = { matrix: node.matrix, brightness: node.brightness, timeout: node.timeout, options: {onionSkinning: node.onionSkinning}};
-      msg.instructions = instructions;
-      console.log(instructions);
-      nuimo.writeMatrix(instructions);
+      msg.instructions = { matrix: node.matrix, brightness: node.brightness, timeout: node.timeout, options: {onionSkinning: node.onionSkinning}};
+      nuimo.writeMatrix(msg.instructions);
       node.send(msg);
     });
   }

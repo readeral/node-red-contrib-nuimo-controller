@@ -17,6 +17,7 @@ module.exports = function(RED) {
     })
     nuimo.on("press", () => {
       var msg = { payload:"I got pressed!" }
+      nuimo.testFunction();
       node.send(msg);
     })
 
