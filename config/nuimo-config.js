@@ -37,9 +37,9 @@ module.exports = function(RED) {
                 ], 255, 2000);
         });
 
-        function writeMatrix(instructions) {
+        this.writeMatrix = (instructions) => {
           device.setLEDMatrix(instructions.ledArray, instructions.brightness, instructions.timeout, instructions.options);
-        };
+        }
 
         device.connect();
       });
