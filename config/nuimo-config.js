@@ -10,24 +10,10 @@ module.exports = function(RED) {
 
       var node = this;
 
-
-
       nuimo.on("discover", (device) => {
-        node.testFunction = () => {
-          console.log("testFunction");
-        }
+        nuimo.stop();
         node.writeMatrix = (instructions) => {
-          console.log(instructions);
-          device.setLEDMatrix([0, 0, 0, 0, 1, 0, 0, 0, 0,
-                              0, 0, 0, 1, 0, 1, 0, 0, 0,
-                               0, 0, 1, 0, 0, 0, 1, 0, 0,
-                                0, 1, 0, 0, 0, 0, 0, 1, 0,
-                                 1, 0, 0, 0, 0, 0, 0, 0, 1,
-                                  0, 1, 0, 0, 0, 0, 0, 1, 0,
-                                   0, 0, 1, 0, 0, 0, 1, 0, 0,
-                                    0, 0, 0, 1, 0, 1, 0, 0, 0,
-                                     0, 0, 0, 0, 1, 0, 0, 0, 0],
-                                      instructions.brightness, instructions.timeout, instructions.options);
+          device.setLEDMatrix(instructions.matrix, instructions.brightness, instructions.timeout, instructions.options);
         }
         device.on("connect", () => {
           node.warn("Nuimo connected");
@@ -56,10 +42,15 @@ module.exports = function(RED) {
         });
 
         device.connect();
+
       });
 
       nuimo.scan();
-  }
 
+      node.on('close', function () {
+        nuimo.stop();
+        nuimo.removeAllListeners();
+      });
+  }
   RED.nodes.registerType("nuimo-config",nuimoConfigNode);
 }
