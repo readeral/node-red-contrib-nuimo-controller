@@ -5,9 +5,16 @@ module.exports = function(RED) {
   function nuimoSetMatrixNode(config) {
     RED.nodes.createNode(this,config);
 //import the config node
-    this.nuimoConfig = RED.nodes.getNode(config.nuimoConfig);
+    nuimo = RED.nodes.getNode(config.nuimoConfig);
 
-    this.matrix = config.matrix;
+    var matrixArray;
+    if (config.matrix.length === 0) {
+        matrixArray = new Array();
+    } else {
+        matrixArray = config.matrix.replace(/, +/g, ",").split(",").map(Number);
+    }
+
+    this.matrix = matrixArray;
     this.brightness = config.brightness;
     this.timeout = config.timeout;
     this.onionSkinning = config.onionSkinning;
@@ -16,6 +23,7 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       let instructions = { matrix: node.matrix, brightness: node.brightness, timeout: node.timeout, options: {onionSkinning: node.onionSkinning}};
       msg.instructions = instructions;
+      console.log(instructions);
       nuimo.writeMatrix(instructions);
       node.send(msg);
     });
