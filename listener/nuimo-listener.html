@@ -4,6 +4,8 @@
         color: '#C0C0C0',
         defaults: {
             name: { value: ""},
+            action: { value: ""},
+            appChoice: {value: ""},
             nuimoConfig: {type: "nuimo-config", required:true}
         },
         inputs: 0,
@@ -12,8 +14,25 @@
         label: function() {
             return this.name || "Nuimo listener";
         },
-        paletteLabel: "Nuimo listener"
+        paletteLabel: "Nuimo listener",
+        oneditprepare: function () {
+          var dropDown = document.getElementById("node-input-appChoice");
+          var node = this;
+          $.getJSON('applist',function(data) {
+            data.forEach( item => {
+                var element = document.createElement("option");
+                element.text = item.name;
+                element.value = item.name;
+                if (item.name == node.appChoice) {
+                  element.selected = true;
+                }
+                dropDown.add(element);
+            });
+          });
+        }
     });
+
+
 </script>
 
 <script type="text/x-red" data-template-name="nuimo-listener">
@@ -24,6 +43,14 @@
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-action"><i class="icon-tag"></i> Action</label>
+        <input type="text" id="node-input-action" placeholder="press">
+    </div>
+    <div class="form-row">
+        <label for="node-input-appChoice"><i class="icon-tag"></i> App</label>
+        <select id="node-input-appChoice"></select>
     </div>
 </script>
 

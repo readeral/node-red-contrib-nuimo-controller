@@ -1,0 +1,41 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nuimo-interface', {
+        category: 'advanced',
+        color: '#C0C0C0',
+        defaults: {
+            name: { value: "" },
+            nuimoConfig: {type:"nuimo-config", required:true},
+            nuimoRotation: { value: "" },
+            selectTimeout: {value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "apple-touch-icon.png",
+        label: function() {
+            return "Nuimo interface";
+        },
+        paletteLabel: "Nuimo interface"
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nuimo-interface">
+    <div class="form-row">
+        <label>Config</label>
+        <input type="text" id="node-input-nuimoConfig">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+    <h4>Nuimo sensitivity</h4>
+    <div>
+      <label>Rotation sensitivity (1-100 - default is 70)</label>
+      <input type="text" id="node-input-nuimoRotation" value="70">
+      <label>App selection timeout</label>
+      <input type="text" id="node-input-selectTimeout" value="800">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nuimo-interface">
+    <p>A node for creating 'apps' on the Nuimo</p>
+</script>

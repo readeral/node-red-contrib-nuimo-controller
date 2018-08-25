@@ -13,7 +13,9 @@
         "nodes": {
             "nuimo-listener": "listener/nuimo-listener.js",
             "nuimo-set-matrix": "matrix/nuimo-set-matrix.js",
-            "nuimo-config": "config/nuimo-config.js"
+            "nuimo-config": "config/nuimo-config.js",
+            "nuimo-interface": "interface/nuimo-interface.js",
+            "nuimo-app": "apps/nuimo-app.js"
         }
     },
     "dependencies": {
