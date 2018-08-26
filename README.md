@@ -6,7 +6,7 @@ Based on [Nuimo.js](https://github.com/nathankellenicki/nuimojs) by [@nathankell
 
 A sample flow [can be found here.](https://flows.nodered.org/flow/43a6b015c2e5fce1a0ffa5305364c27b)
 
-##Provides
+## Provides
 -   a config node for initialising the bluetooth connection
 -   an interface node which represents the Nuimo controller on the flow canvas
 -   an app node to define the apps controllable by the Nuimo, and their corresponding 9x9 LED array image
@@ -15,7 +15,7 @@ A sample flow [can be found here.](https://flows.nodered.org/flow/43a6b015c2e5fc
 
 Documentation is still being written, but the code has been fairly extensively commented so should provide some guidance in the meantime.
 
-##Implementing the nodes
+## Implementing the nodes
 Typically at a minimum you'll need on your canvas:
 -   A Nuimo interface node (you only need one - and in fact things will probably break if you have more than one)
 -   A Nuimo app node (but you can have as many as you find practical)
@@ -27,7 +27,7 @@ Typically at a minimum you'll need on your canvas:
 4.  Having deployed, you'll now be able to use the config of your listener nodes to select which app the node will respond to. You can think of these as being set to channels only receiving events from the controller on the selected channel.
 5.  Wire up the listener node to your favourite nodes (such as Philips Hue, Wemo, Lifx, Homebridge, Xiaomi, WoL, anything really) - making use of all the listeners available to you. **Your best bet while there isn't enough documentation would be to wire up a single debug node on the output of the listener, and play with the controller to see the variety of messages that are produced**
 
-##Using apps
+## Using apps
 Like the original vision for the Nuimo controller, this node red implementation has enabled multiple different devices to be controlled by the nuimo. I've chosen to call these 'apps', but there's probably a better name for them.
 To use the Nuimo with these nodes, you need at least one app node plugged into the interface node, but you're likely to have more.
 The app config interface provides you with:
@@ -38,7 +38,7 @@ The app config interface provides you with:
 Using this config, set a unique name for your app, and click the circles on the GUI input to define the image that will be output to the Nuimo's display for your app. You can use the presets as a starting point (or just use them outright), or if you want to define the 81 LEDs manually, you can feel free to use the String input box instead.
 Once you've defined your apps and plugged them in, you'll want to activate these apps - do so by deploying.
 
-##Invoking the app switcher
+## Invoking the app switcher
 Unlike the original Nuimo approach (which used a swiping action to change which device was being controlled) I've opted for something a little more scalable for people who want to control a solid number of smart home devices.
 To switch between apps:
 -   Long press the physical button of the Nuimo, until a 5 pixel bar appears on the LED array
@@ -46,7 +46,7 @@ To switch between apps:
 -   Using the rotary encoder, turn quickly to switch between app options - either forward or backward will cycle in that direction around the available options. (Adjusting the sensitivity of the app switcher is coming - the settings already exist in the interface node but haven't been properly tested yet)
 -   Once you arrive at the app you want to use, click the physical button again which will set the active app. The image will pause for two seconds and then disappear, confirming that you've chosen your new active app
 
-##Listeners
+## Listeners
 When it comes to processing the input from the Nuimo, I've left this largely up to the end user. Maybe eventually I'll create some helper nodes for some common actions. All actions of the Nuimo are available to you:
 -   Button press
 -   Rotate
