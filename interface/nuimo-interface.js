@@ -6,6 +6,11 @@ module.exports = function(RED) {
     var tempOption = 0;
     var selectionMode;
 
+
+    //
+    // HELPER FUNCTIONS AND DEFINITIONS
+    //
+
     //import the config node
     nuimo = RED.nodes.getNode(config.nuimoConfig);
 
@@ -15,8 +20,24 @@ module.exports = function(RED) {
 
     globalContext.set("sensitivity", [config.nuimoRotation, config.selectTimeout])
 
-    //handle input - if a normal message, it's passed through,
-    //else it receives app definitions and adds them to apps array
+    function setActiveApp(value, callback) {
+      globalContext.set("activeApp", value)
+      if (callback) {
+        callback()
+      }
+      nuimo.getActive()
+    }
+
+
+    //
+    // APP REGISTRATION
+    //
+
+    //The following code 'registers' app nodes outputs into an array called
+    //'apps'. This is the means by which the Nuimo can control multiple devices
+
+    //The node handles input as expected - if a normal message, it's passed
+    //through, otherwise it receives app definitions and adds them to apps array
     this.on("input", function(msg) {
       if (msg.hasOwnProperty("image")) {
         //Pushes new apps to apps array. Apps that duplicate an existign name are ignored
@@ -26,19 +47,24 @@ module.exports = function(RED) {
       }
       node.send(msg);
     });
-    //adds updated apps list to flow context
+    //The registered apps are then added to the flow context, ready to be used
+    //in the config options of Nuimo listener nodes
     flowContext.set("apps", apps);
     //if global context doesn't include the activeApp variable,
     //the variable is created and set to the first app in app array
-    //the tempOption (for app selection mode) is either set to
-    //first app in array or, if activeApp exists, to activeApp
     if (!globalContext.get("activeApp")) {
-      globalContext.set("activeApp", apps[0]);
-    } else {
-      tempOption = apps.indexOf(apps.filter(item => item.name == globalContext.get("activeApp").name));
+      setActiveApp(apps[0]);
     }
 
+    //
+    // NODE STATUS
+    //
+
     //Nuimo connection and battery level output as a status icon
+
+    //When the nuimo is connected or the battery level changes
+    //it calls batteryStatus() to update the status with a colour and %
+    //representation of the battery status
     nuimo.on("connected", (batteryLevel) => {
       batteryStatus(batteryLevel);
     })
@@ -58,33 +84,24 @@ module.exports = function(RED) {
       }
     }
 
-    //When the nuimo button is long-pressed (over 2.5 seconds)
-    //the nuimo is placed into 'app selection' mode and the
-    //active app is replaced with pending to ensure all nuimo events
-    //are ignored until a new app is selected
-    nuimo.on("longPress", () => {
-      tempOption = apps.indexOf(apps.filter(item => item.name == globalContext.get("activeApp").name)[0]);
-      console.log(tempOption);
-      globalContext.set("activeApp", "pending");
+//
+// SELECTION MODE CODE
+//
 
+    //When the nuimo button is long-pressed (timing defined by interface config)
+    //the nuimo is placed into 'app selection mode' and the global activeApp
+    //variable is replaced with 'pending' to ensure all nuimo events are ignored
+    //until a new app is selected
+    //tempOption gets defined (as an integer) to tell the nuimo what to display
+    nuimo.on("longPress", () => {
+      var initial = apps.filter(item => item.name == globalContext.get("activeApp").name)[0];
+      tempOption = (apps.indexOf(initial) < 0 ? 0 : apps.indexOf(initial));
+      setActiveApp("pending");
       appSelectionMode(tempOption);
-      //when a normal press is registered while in 'app selection' mode,
-      //the displayed app is stored in the activeApp variable.
-    });
-    nuimo.on("press", (activeApp) => {
-      if (activeApp == "pending" && selectionMode) {
-        clearInterval(flash);
-        selectionMode = false;
-        globalContext.set("activeApp", apps[tempOption]);
-        nuimo.writeMatrix({ matrix: apps[tempOption].image, brightness: 255, timeout: 2000, onionSkinning: true});
-      }
     });
     function appSelectionMode(opt) {
-      console.log(opt);
-      console.log(apps[opt]);
       selectionMode = true;
-      var thing = apps[opt].image
-      var instructions = { matrix: thing, brightness: 255, timeout: 500, onionSkinning: true};
+      var instructions = { matrix: apps[opt].image, brightness: 255, timeout: 500, onionSkinning: true};
       nuimo.writeMatrix(instructions);
       flash = setInterval( opt => {
         nuimo.writeMatrix(instructions);
@@ -94,50 +111,50 @@ module.exports = function(RED) {
     //cAcc for clockwise accumulator, acAcc for anti-clockwise
     var cAcc = 0;
     var acAcc = 0;
+    //Once the accumulator reaches the threshold, nextApp/prevApp are called to:
+    // - clear the appSelectionMode interval
+    // - reset the relevant accumulator
+    // - update the tempOption variable
+    // - calling appSelectionMode with the new tempOption
     nuimo.on("rotate", (amount) => {
       if (selectionMode) {
         if (amount > 0) {
           acAcc = 0;
           if (amount > 50) {
             cAcc += 1;
-            if (cAcc >= 5) {
-              cAcc = 0;
-              nextApp()
-              console.log("nextApp!")
-            }
+            if (cAcc >= 5) nextApp();
           }
         } else {
           cAcc = 0;
           if (amount < -50) {
             acAcc += 1;
-            if (acAcc >= 5) {
-              acAcc = 0;
-              console.log("prevApp!")
-            }
-              //nextApp();
+            if (acAcc >= 5) prevApp();
           }
-          //prevApp();
         }
       }
     });
     function nextApp() {
       clearInterval(flash);
-      if (tempOption == (apps.length - 1)) {
-        tempOption = 0;
-      } else {
-        tempOption += 1;
-      }
+      cAcc = 0;
+      tempOption == (apps.length - 1) ? tempOption = 0 : tempOption += 1;
       appSelectionMode(tempOption);
     }
     function prevApp() {
       clearInterval(flash);
-      if (tempOption == 0) {
-        tempOption = (apps.length - 1);
-      } else {
-        tempOption -= 1;
-      }
+      acAcc = 0;
+      tempOption == 0 ? tempOption = (apps.length - 1) : tempOption -= 1;
       appSelectionMode(tempOption);
     }
+    //when a normal press is registered while in 'app selection' mode,
+    //the displayed app is stored in the activeApp variable
+    nuimo.on("press", (activeApp) => {
+      if (activeApp == "pending" && selectionMode) {
+        clearInterval(flash);
+        selectionMode = false;
+        setActiveApp(apps[tempOption]);
+        nuimo.writeMatrix({ matrix: apps[tempOption].image, brightness: 255, timeout: 2000, onionSkinning: true});
+      }
+    });
   }
   RED.nodes.registerType("nuimo-interface",nuimoInterfaceNode);
   RED.httpAdmin.get("/applist", RED.auth.needsPermission("nuimo-interface.read"), function(req,res) {

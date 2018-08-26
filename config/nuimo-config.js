@@ -5,6 +5,7 @@ let Timeout = require('../Timeout');
   function nuimoConfigNode(n) {
       RED.nodes.createNode(this,n);
       var globalContext = this.context().global;
+      var node = this;
 
       if (!globalContext.get("activeApp")) {
         globalContext.set("activeApp", "pending");
@@ -15,13 +16,15 @@ let Timeout = require('../Timeout');
       let Nuimo = require('nuimojs'),
       nuimo = new Nuimo();
 
-      var node = this;
 
       var longPress;
 
       nuimo.on("discover", (device) => {
         node.writeMatrix = (instructions) => {
           device.setLEDMatrix(instructions.matrix, instructions.brightness, instructions.timeout, instructions.options);
+        }
+        node.getActive = () => {
+          activeApp = globalContext.get("activeApp");
         }
         device.on("connect", () => {
           node.warn("Nuimo connected");
@@ -41,11 +44,7 @@ let Timeout = require('../Timeout');
           },400);
         });
         device.on("release", () => {
-          activeApp = globalContext.get("activeApp");
-          console.log(activeApp);
-          console.log(sensitivity[1]);
           Timeout.clear('extender');
-          console.log(Date.now() - longPress);
           if (Date.now() - longPress < sensitivity[1]) {
             node.emit('press', activeApp)
           } else {
@@ -53,38 +52,45 @@ let Timeout = require('../Timeout');
           }
         })
         device.on("touch", (direction) => {
-          activeApp = globalContext.get("activeApp");
           switch (direction) {
             case (Nuimo.Area.LEFT):
-                node.emit("touch", "LEFT", activeApp);
-                console.log("Touched left"); break;
+                node.emit("touch", "LEFT", activeApp); break;
             case (Nuimo.Area.RIGHT):
-                node.emit("touch", "RIGHT", activeApp);
-                console.log("Touched right"); break;
+                node.emit("touch", "RIGHT", activeApp); break;
             case (Nuimo.Area.TOP):
-                node.emit("touch", "TOP", activeApp);
-                console.log("Touched top"); break;
+                node.emit("touch", "TOP", activeApp); break;
             case (Nuimo.Area.BOTTOM):
-                node.emit("touch", "BOTTOM", activeApp);
-                console.log("Touched bottom"); break;
+                node.emit("touch", "BOTTOM", activeApp); break;
             case (Nuimo.Area.LONGLEFT):
-                node.emit("touch", "LONGLEFT", activeApp);
-                console.log("Long touched left"); break;
+                node.emit("touch", "LONGLEFT", activeApp); break;
             case (Nuimo.Area.LONGRIGHT):
-                node.emit("touch", "LONGRIGHT", activeApp);
-                console.log("Long touched right"); break;
+                node.emit("touch", "LONGRIGHT", activeApp); break;
             case (Nuimo.Area.LONGTOP):
-                node.emit("touch", "LONGTOP", activeApp);
-                console.log("Long touched top"); break;
+                node.emit("touch", "LONGTOP", activeApp); break;
             case (Nuimo.Area.LONGBOTTOM):
-                node.emit("touch", "LONGBOTTOM", activeApp);
-                console.log("Long touched bottom"); break;
+                node.emit("touch", "LONGBOTTOM", activeApp); break;
           }
+        })
+        device.on("swipe", (direction) => {
+          switch (direction) {
+            case (Nuimo.Swipe.LEFT):
+                node.emit("swipe", "LEFT", activeApp); break;
+            case (Nuimo.Swipe.RIGHT):
+                node.emit("swipe", "RIGHT", activeApp); break;
+            case (Nuimo.Swipe.UP):
+                node.emit("swipe", "UP", activeApp); break;
+            case (Nuimo.Swipe.DOWN):
+                node.emit("swipe", "DOWN", activeApp); break;
+          }
+        })
+        device.on("fly", (direction, speed) => {
+          node.emit("fly", direction, activeApp);
+        })
+        device.on("distance", (distance) => {
+          node.emit("distance", distance, activeApp);
         })
 
         device.on("rotate", (amount) => {
-          activeApp = globalContext.get("activeApp");
-          console.log(`Rotated by ${amount}`);
           node.emit("rotate", amount, activeApp, sensitivity[0]);
         });
 

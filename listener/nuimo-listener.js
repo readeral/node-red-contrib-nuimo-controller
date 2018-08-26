@@ -13,27 +13,54 @@ module.exports = function(RED) {
       //event, in order to use the 'press' event to create and reserve
       //a 'longPress' action for app switching. There should be no notable
       //impact on the end user, but if you find one, please raise a github issue
-      console.log(appChoice + " - variable");
-      console.log(activeApp.name);
       if (appChoice == activeApp.name) {
         var msg = { payload:"I got pressed!" }
         node.send(msg);
       }
     })
     nuimo.on("rotate", (amount, activeApp) => {
-      console.log(appChoice);
       if (appChoice == activeApp.name) {
         var msg = { payload:`I rotated ${amount}!`, degrees: amount }
         node.send(msg);
       }
     })
     nuimo.on("touch", (region, activeApp) => {
-      console.log(appChoice);
       if (appChoice == activeApp.name) {
-        var msg = {};
-        msg.topic = "touch";
-        msg.region = region;
-        msg.activeApp = activeApp;
+        var msg = {
+          topic: "touch",
+          region: region,
+          activeApp: activeApp
+        };
+        node.send(msg);
+      }
+    })
+    nuimo.on("swipe", (direction, activeApp) => {
+      if (appChoice == activeApp.name) {
+        var msg = {
+          topic: "swipe",
+          direction: direction,
+          activeApp: activeApp
+        };
+        node.send(msg);
+      }
+    })
+    nuimo.on("fly", (direction, activeApp) => {
+      if (appChoice == activeApp.name) {
+        var msg = {
+          topic: "fly",
+          direction: direction,
+          activeApp: activeApp
+        };
+        node.send(msg);
+      }
+    })
+    nuimo.on("distance", (distance, activeApp) => {
+      if (appChoice == activeApp.name) {
+        var msg = {
+          topic: "distance",
+          direction: distance,
+          activeApp: activeApp
+        };
         node.send(msg);
       }
     })
