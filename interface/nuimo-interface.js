@@ -13,6 +13,8 @@ module.exports = function(RED) {
     var flowContext = this.context().flow;
     var globalContext = this.context().global;
 
+    globalContext.set("sensitivity", [config.nuimoRotation, config.selectTimeout])
+
     //handle input - if a normal message, it's passed through,
     //else it receives app definitions and adds them to apps array
     this.on("input", function(msg) {
@@ -36,6 +38,25 @@ module.exports = function(RED) {
       tempOption = apps.indexOf(apps.filter(item => item.name == globalContext.get("activeApp").name));
     }
 
+    //Nuimo connection and battery level output as a status icon
+    nuimo.on("connected", (batteryLevel) => {
+      batteryStatus(batteryLevel);
+    })
+    nuimo.on("batteryLevelChange", (batteryLevel) => {
+      batteryStatus(batteryLevel);
+    })
+    nuimo.on("disconnected", () => {
+      node.status({fill:"grey",shape:"ring",text:"disconnected"});
+    })
+    function batteryStatus(batteryLevel) {
+      if (batteryLevel <= 15) {
+        node.status({fill:"red",shape:"dot",text:`connected - ${batteryLevel}%`});
+      } else if (batteryLevel <= 30) {
+        node.status({fill:"yellow",shape:"dot",text:`connected - ${batteryLevel}%`});
+      } else {
+        node.status({fill:"green",shape:"dot",text:`connected - ${batteryLevel}%`});
+      }
+    }
 
     //When the nuimo button is long-pressed (over 2.5 seconds)
     //the nuimo is placed into 'app selection' mode and the
@@ -51,13 +72,11 @@ module.exports = function(RED) {
       //the displayed app is stored in the activeApp variable.
     });
     nuimo.on("press", (activeApp) => {
-      console.log(activeApp);
-      if (selectionMode) {
+      if (activeApp == "pending" && selectionMode) {
         clearInterval(flash);
+        selectionMode = false;
         globalContext.set("activeApp", apps[tempOption]);
-        var thing = apps[tempOption].image
-        var instructions = { matrix: thing, brightness: 255, timeout: 2000, onionSkinning: true};
-        nuimo.writeMatrix(instructions);
+        nuimo.writeMatrix({ matrix: apps[tempOption].image, brightness: 255, timeout: 2000, onionSkinning: true});
       }
     });
     function appSelectionMode(opt) {

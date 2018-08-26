@@ -5,8 +5,8 @@
         defaults: {
             name: { value: "" },
             nuimoConfig: {type:"nuimo-config", required:true},
-            nuimoRotation: { value: "" },
-            selectTimeout: {value: "" }
+            nuimoRotation: { value: 70, validate:RED.validators.number() },
+            selectTimeout: {value: 800, validate:RED.validators.number() }
         },
         inputs: 1,
         outputs: 1,
@@ -30,9 +30,9 @@
     <h4>Nuimo sensitivity</h4>
     <div>
       <label>Rotation sensitivity (1-100 - default is 70)</label>
-      <input type="text" id="node-input-nuimoRotation" value="70">
-      <label>App selection timeout</label>
-      <input type="text" id="node-input-selectTimeout" value="800">
+      <input type="text" id="node-input-nuimoRotation">
+      <label>App selection timeout (in milliseconds - default is 800)</label>
+      <input type="text" id="node-input-selectTimeout">
     </div>
 </script>
 
