@@ -14,13 +14,20 @@ module.exports = function(RED) {
       //a 'longPress' action for app switching. There should be no notable
       //impact on the end user, but if you find one, please raise a github issue
       if (appChoice == activeApp.name) {
-        var msg = { payload:"I got pressed!" }
+        var msg = {
+          topic: "press",
+          activeApp: activeApp
+        };
         node.send(msg);
       }
     })
     nuimo.on("rotate", (amount, activeApp) => {
       if (appChoice == activeApp.name) {
-        var msg = { payload:`I rotated ${amount}!`, degrees: amount }
+        var msg = {
+          topic: "rotate",
+          amount: amount,
+          activeApp: activeApp
+        };
         node.send(msg);
       }
     })
