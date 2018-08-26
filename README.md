@@ -60,3 +60,7 @@ You receive unadulterated event data from the Nuimo for all these actions, with 
 ### Known issues yet to be fixed
 -   Currently node-red needs to be stopped and restarted if the latest deploy was a 'full' deploy, due to the config node (which maintains the bluetooth connection) not cleaning up properly. To get around this problem on the regular, make use of the Modified Flows deployment option, unless you've made changes to the config node, in which case you'll have to restart Node Red. **If anyone can suggest how to properly clean up the config node so this isn't a problem, I'm all ears!**
 -   If activeApp (in the global context) is updated programatically rather than through the Nuimo controller, then you lose the ability to bring up the app switcher. Until this is resolved, avoid changing that variable via function nodes.
+
+### Contribution guide
+As this is a new project, the only pull requests that will be considered are updates to the documentation, minor error fixes in the code, and minor feature enhancements (like matrix array preset options)
+As I'm a relatively new javascript developer, requests for refactoring with promises/async/await etc. will require significant explanation of the benefits for the change if a pull request is to be considered. specific use cases applicable to your unique project will probably be unlikely to be considered for inclusion. rewriting in typescript is out of the question at this stage (i dont have time to learn it. Requests for tests are warmly encouraged, pending a discussion on a suitable testing approach.
