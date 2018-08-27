@@ -7,20 +7,11 @@ module.exports = function(RED) {
 //import the config node
     nuimo = RED.nodes.getNode(config.nuimoConfig);
 
-    var matrixArray;
-    if (config.appMatrixImage.length === 0) {
-        var appMatrixImage = new Array();
-    } else {
-        var appMatrixImage = config.appMatrixImage.split(',');
-    }
-
-    this.brightness = config.brightness;
-    this.timeout = config.timeout;
-    this.onionSkinning = config.onionSkinning;
+    var appMatrixImage = config.appMatrixImage.split(',');
 
     var node = this;
     this.on('input', function(msg) {
-      msg.instructions = { matrix: appMatrixImage, brightness: node.brightness, timeout: node.timeout, options: {onionSkinning: node.onionSkinning}};
+      msg.instructions = { matrix: appMatrixImage, brightness: config.brightness, timeout: config.timeout, options: {onionSkinning: config.onionSkinning}};
       nuimo.writeMatrix(msg.instructions);
       node.send(msg);
     });
