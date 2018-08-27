@@ -69,5 +69,9 @@ You receive unadulterated event data from the Nuimo for all these actions, with 
 -   If activeApp (in the global context) is updated programatically rather than through the Nuimo controller, then you lose the ability to bring up the app switcher. Until this is resolved, avoid changing that variable via function nodes.
 
 ### Contribution guide
-As this is a new project, the only pull requests that will be considered are updates to the documentation, minor error fixes in the code, and minor feature enhancements (like matrix array preset options)
-As I'm a relatively new javascript developer, requests for refactoring with promises/async/await etc. will require significant explanation of the benefits for the change if a pull request is to be considered. specific use cases applicable to your unique project will probably be unlikely to be considered for inclusion. rewriting in typescript is out of the question at this stage (i dont have time to learn it. Requests for tests are warmly encouraged, pending a discussion on a suitable testing approach.
+-   If you'd like to be a maintainer, just let me know! :)
+-   Requests for tests are warmly encouraged, [pending a discussion on a suitable testing approach](https://github.com/readeral/node-red-contrib-nuimo-controller/issues/1).
+-   As this is a new project, the only pull requests that will be considered are updates to the documentation, minor error fixes in the code, and minor feature enhancements (like matrix array preset options).
+-   As I'm a relatively new javascript developer, requests for refactoring with promises/async/await etc. in specific code will require explanation of the benefits for the change if a pull request is to be considered.
+-   Specific use cases applicable to your unique project will likely be rejected for inclusion. A broadening of the applicability of the pull request will be far more successful.
+-   Rewriting in typescript is out of the question at this stage (I don't have time to learn it!) but feel free to maintain a fork until I get around to learning TS.
