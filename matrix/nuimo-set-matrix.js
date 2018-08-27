@@ -8,20 +8,19 @@ module.exports = function(RED) {
     nuimo = RED.nodes.getNode(config.nuimoConfig);
 
     var matrixArray;
-    if (config.matrix.length === 0) {
-        matrixArray = new Array();
+    if (config.appMatrixImage.length === 0) {
+        var appMatrixImage = new Array();
     } else {
-        matrixArray = config.matrix.replace(/, +/g, ",").split(",").map(Number);
+        var appMatrixImage = config.appMatrixImage.split(',');
     }
 
-    this.matrix = matrixArray;
     this.brightness = config.brightness;
     this.timeout = config.timeout;
     this.onionSkinning = config.onionSkinning;
 
     var node = this;
     this.on('input', function(msg) {
-      msg.instructions = { matrix: node.matrix, brightness: node.brightness, timeout: node.timeout, options: {onionSkinning: node.onionSkinning}};
+      msg.instructions = { matrix: appMatrixImage, brightness: node.brightness, timeout: node.timeout, options: {onionSkinning: node.onionSkinning}};
       nuimo.writeMatrix(msg.instructions);
       node.send(msg);
     });

@@ -4,8 +4,10 @@
     "author": "Alan Reader",
     "repository": "github:readeral/node-red-contrib-nuimo-controller",
     "description": "A node to interface between Nuimo and Node-red using nuimojs and noble",
-    "keywords": [ "node-red" ],
-    "license" : "GPL-3.0-or-later",
+    "keywords": [
+        "node-red"
+    ],
+    "license": "GPL-3.0-or-later",
     "node-red": {
         "nodes": {
             "nuimo-listener": "listener/nuimo-listener.js",
