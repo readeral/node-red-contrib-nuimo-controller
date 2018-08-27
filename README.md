@@ -2,7 +2,14 @@
 
 A Node Red node for outputting events from a Nuimo controller, and sending updates to the 9x9 led array.
 
-Based on [Nuimo.js](https://github.com/nathankellenicki/nuimojs) by [@nathankellenicki](https://github.com/nathankellenicki) which utilises the Noble BLE library by Sandeep Mistry.
+Based on [Nuimo.js](https://github.com/nathankellenicki/nuimojs) by [@nathankellenicki](https://github.com/nathankellenicki) which utilises the [Noble BLE library](https://github.com/noble/noble) by [@sandeepmistry](https://github.com/sandeepmistry/).
+
+## Installation
+**Installation may have a few steps depending on your platform.**
+As this library depends on Noble, there may be some specific requirements for your platform. [Please review the prerequisites for Noble](https://github.com/noble/noble#prerequisites) prior to installing the nodes.
+
+Installing the nodes into node red should be relatively straight forward, either search for 'nuimo' in the manage palette menu, or
+`npm install node-red-contrib-nuimo-controller`
 
 A sample flow [can be found here.](https://flows.nodered.org/flow/43a6b015c2e5fce1a0ffa5305364c27b)
 
@@ -58,5 +65,5 @@ When it comes to processing the input from the Nuimo, I've left this largely up 
 You receive unadulterated event data from the Nuimo for all these actions, with the exception of button press. 'Press' is actually triggered on 'Release' in order to implement the long-press app switcher function. This means you're unable to program your own button holding rules, but I hope this trade-off is a small price to pay for a nicer app switcher. Maybe down the track I'll program the option to change how the app switcher is invoked.
 
 ### Known issues yet to be fixed
--   Currently node-red needs to be stopped and restarted if the latest deploy was a 'full' deploy, due to the config node (which maintains the bluetooth connection) not cleaning up properly. To get around this problem on the regular, make use of the Modified Flows deployment option, unless you've made changes to the config node, in which case you'll have to restart Node Red. **If anyone can suggest how to properly clean up the config node so this isn't a problem, I'm all ears!**
+-   Currently node-red needs to be stopped and restarted if the latest deploy was a 'full' deploy, due to the config node (which maintains the bluetooth connection) not cleaning up properly. **To get around this problem on the regular, make use of the Modified Flows deployment option**, unless you've made changes to the config node, in which case you'll have to restart Node Red. (N.b This is related to an [outstanding pull request on the Noble BLE library](https://github.com/noble/noble/pull/577), so likely won't be resolved until it is merged )
 -   If activeApp (in the global context) is updated programatically rather than through the Nuimo controller, then you lose the ability to bring up the app switcher. Until this is resolved, avoid changing that variable via function nodes.
