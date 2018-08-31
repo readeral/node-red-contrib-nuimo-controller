@@ -11,7 +11,11 @@ As this library depends on Noble, there may be some specific requirements for yo
 Installing the nodes into node red should be relatively straight forward, either search for 'nuimo' in the manage palette menu, or
 `npm install node-red-contrib-nuimo-controller`
 
+##Sample flows (feel free to raise an issue or a pull request with more sample flows to add to the list)
+
 A sample flow [can be found here.](https://flows.nodered.org/flow/43a6b015c2e5fce1a0ffa5305364c27b)
+
+Here's a flow for [setting up a count-down timer using the Nuimo](https://flows.nodered.org/flow/0af13a6b3155e176a8371450dcbf5747), with both the timer setting and the countdown output being displayed on the matrix. Assumes you have mytimeout and googlehome-notify installed (mytimeout is essential, googlehome-notify optional).
 
 ## Provides
 -   a config node for initialising the bluetooth connection
