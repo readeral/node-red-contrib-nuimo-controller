@@ -155,6 +155,14 @@ module.exports = function(RED) {
         nuimo.writeMatrix({ matrix: apps[tempOption].image, brightness: 255, timeout: 2000, onionSkinning: true});
       }
     });
+    this.on('close', function() {
+      if (config.reinitialise) {
+        console.log("Reinitialising apps.");
+        apps = [];
+        flowContext.set("apps", apps);
+        config.reinitialise = false;
+      }
+    });
   }
   RED.nodes.registerType("nuimo-interface",nuimoInterfaceNode);
   RED.httpAdmin.get("/applist", RED.auth.needsPermission("nuimo-interface.read"), function(req,res) {

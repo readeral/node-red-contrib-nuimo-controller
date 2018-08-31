@@ -6,7 +6,8 @@
             name: { value: "" },
             nuimoConfig: {type:"nuimo-config", required:true},
             nuimoRotation: { value: 70, validate:RED.validators.number() },
-            selectTimeout: {value: 800, validate:RED.validators.number() }
+            selectTimeout: {value: 800, validate:RED.validators.number() },
+            reinitialise: {value: false}
         },
         inputs: 1,
         outputs: 1,
@@ -14,7 +15,12 @@
         label: function() {
             return "Nuimo interface";
         },
-        paletteLabel: "Nuimo interface"
+        paletteLabel: "Nuimo interface",
+        oneditprepare: function () {
+          document.getElementById('node-input-reinitialise').addEventListener('click', function() {
+            console.log("reset!");
+          })
+        }
     });
 </script>
 
@@ -27,13 +33,17 @@
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name">
     </div>
+    <div class="form-row">
     <h4>Nuimo sensitivity</h4>
-    <div>
       <label>Rotation sensitivity (1-100 - default is 70)</label>
       <input type="text" id="node-input-nuimoRotation">
       <label>App selection timeout (in milliseconds - default is 800)</label>
       <input type="text" id="node-input-selectTimeout">
     </div>
+    <div class="form-row">
+    <h4>Advanced</h4>
+      <button id="node-input-reinitialise" class="btn">Re-initialise apps</button>
+      </div>
 </script>
 
 <script type="text/x-red" data-help-name="nuimo-interface">

@@ -16,7 +16,6 @@ let Timeout = require('../Timeout');
       let Nuimo = require('nuimojs'),
       nuimo = new Nuimo();
 
-
       var longPress;
 
       nuimo.on("discover", (device) => {
@@ -27,6 +26,7 @@ let Timeout = require('../Timeout');
           activeApp = globalContext.get("activeApp");
         }
         device.on("connect", () => {
+          console.log(nuimo.getConnectedDevices());
           node.warn("Nuimo connected");
           node.emit('connected',device.batteryLevel);
         });
