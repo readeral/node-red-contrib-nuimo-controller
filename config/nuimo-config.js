@@ -1,18 +1,15 @@
 //Needs to 'hold' the bluetooth connection and expose it to the various 'normal' nodes
 
 module.exports = function(RED) {
-let Timeout = require('../Timeout');
   function nuimoConfigNode(n) {
       RED.nodes.createNode(this,n);
       var globalContext = this.context().global;
       var node = this;
 
-      if (!globalContext.get("activeApp")) {
-        globalContext.set("activeApp", "pending");
-      }
-      var activeApp = globalContext.get("activeApp");
+      var activeApp = globalContext.get("activeApp") || "pending";
       var sensitivity = globalContext.get("sensitivity") || [70, 800];
 
+      let Timeout = require('../Timeout');
       let Nuimo = require('nuimojs'),
       nuimo = new Nuimo();
 
@@ -46,8 +43,10 @@ let Timeout = require('../Timeout');
         device.on("release", () => {
           Timeout.clear('extender');
           if (Date.now() - longPress < sensitivity[1]) {
+            longPress = null;
             node.emit('press', activeApp)
           } else {
+            longPress = null;
             node.emit('longPress')
           }
         })
@@ -97,6 +96,7 @@ let Timeout = require('../Timeout');
         device.connect();
 
         node.on('close', function() {
+          device.disconnect();
           device.removeAllListeners();
         });
       });
@@ -104,6 +104,7 @@ let Timeout = require('../Timeout');
       nuimo.scan();
 
       node.on('close', function () {
+
         nuimo.stop();
         nuimo.removeAllListeners();
         delete nuimo;

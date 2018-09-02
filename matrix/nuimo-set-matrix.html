@@ -347,5 +347,22 @@
 </script>
 
 <script type="text/x-red" data-help-name="nuimo-set-matrix">
-    <p>A node for creating a matrix to pass through to the Nuimo output node. The matrix value is passed via msg.setMatrix property</p>
+    <h2>A node for creating a matrix to pass through to the Nuimo output node.</h2>
+    <h4>Editor settings</h4>
+    <p>Setting the parameters on the node editor should be relatively straightforward:</p>
+    <p>To define an LED array output for your app, click the circles in the grid to 'turn on' or 'turn off' that pixel. You can start from a preset available in the drop down, or copy in your own comma-delimited string of 1s and 0s into the String input field.</p>
+    <br />
+    <h4>Inbuilt options</h4>
+    <p><b>msg.int</b> - Passing a msg.int will display an integer on the nuimo. All output is in two-digit form, so single digit parameters will be prefixed by a '0'. All other settings will either be inherited from the node editor, or via custom parameters below.</p>
+    <p><b>msg.scale</b> - Passing an array on the msg.scale property displays a vertical line, according to the height and width you provide: [height, width]. Height is 1 to 9, Width can be odd numbers from 1 to 9.</p>
+    <br />
+    <h4>Custom matrix setting via msg</h4>
+    <p>If you''d like to set the matrix via a msg, the values are set by the following properties:
+    <ul>
+    <li>Matrix layout is passed via msg.setMatrix property</li>
+    <li>Brightness is set by msg.brightness</li>
+    <li>Timeout is set by msg.timeout</li>
+    <li>Onion skinning is set by msg.onionSkinning</li>
+    </ul>
+    <p>All of these values are then available on msg.instructions on the output</p>
 </script>

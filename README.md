@@ -68,9 +68,22 @@ When it comes to processing the input from the Nuimo, I've left this largely up 
 -   Distance (when the sensor is activated with a long touch on the top)
 You receive unadulterated event data from the Nuimo for all these actions, with the exception of button press. 'Press' is actually triggered on 'Release' in order to implement the long-press app switcher function. This means you're unable to program your own button holding rules, but I hope this trade-off is a small price to pay for a nicer app switcher. Maybe down the track I'll program the option to change how the app switcher is invoked.
 
+## Using the matrix node
+The matrix node allows your Nuimo to respond to changes in your smart home environment, like increased volume or brightness, or alerting you to something's completion.
+
+At the most basic level you can define the matrix's output using it's editor interface and GUI input, or you can pass a payload with instructions on how to update the display, using it's inbuilt methods or completely raw.
+
+The matrix node will respond first to payload instructions before defaulting back to the editor interface options.
+
+See the editor help on the matrix node for more information.
+
 ### Known issues yet to be fixed
 -   Currently node-red needs to be stopped and restarted if the latest deploy was a 'full' deploy, due to the config node (which maintains the bluetooth connection) not cleaning up properly. **To get around this problem on the regular, make use of the Modified Flows deployment option**, unless you've made changes to the config node, in which case you'll have to restart Node Red. (N.b This is related to an [outstanding pull request on the Noble BLE library](https://github.com/noble/noble/pull/577), so likely won't be resolved until it is merged )
 -   If activeApp (in the global context) is updated programatically rather than through the Nuimo controller, then you lose the ability to bring up the app switcher. Until this is resolved, avoid changing that variable via function nodes.
+
+### Future plans
+-   Implement an optional 'translator' for raw rotation data making it a bit easier to use.
+-   Further to this, implement a 'momentum' feature that picks up on increased rotation speed
 
 ### Contribution guide
 -   If you'd like to be a maintainer, just let me know! :)
