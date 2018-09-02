@@ -6,7 +6,10 @@ module.exports = function(RED) {
       var globalContext = this.context().global;
       var node = this;
 
-      var activeApp = globalContext.get("activeApp") || "pending";
+      if (!globalContext.get("activeApp")) {
+        globalContext.set("activeApp", "pending");
+      }
+      var activeApp = globalContext.get("activeApp");
       var sensitivity = globalContext.get("sensitivity") || [70, 800];
 
       let Timeout = require('../Timeout');
