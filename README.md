@@ -46,11 +46,13 @@ The app config interface provides you with:
 -   App type (currently unused/not hooked up to any functional purpose)
 -   String input (mirrored exactly by the GUI input)
 -   GUI input (as above, mirrors exactly into the String input)
+
 Using this config, set a unique name for your app, and click the circles on the GUI input to define the image that will be output to the Nuimo's display for your app. You can use the presets as a starting point (or just use them outright), or if you want to define the 81 LEDs manually, you can feel free to use the String input box instead.
 Once you've defined your apps and plugged them in, you'll want to activate these apps - do so by deploying.
 
 ## Invoking the app switcher
 Unlike the original Nuimo approach (which used a swiping action to change which device was being controlled) I've opted for something a little more scalable for people who want to control a solid number of smart home devices.
+
 To switch between apps:
 -   Long press the physical button of the Nuimo, until a 5 pixel bar appears on the LED array
 -   Wait a moment, and the array will change to a flashing representation of the currently active app
@@ -66,6 +68,7 @@ When it comes to processing the input from the Nuimo, I've left this largely up 
 -   Long touch (coming on the same topic as Touch)
 -   Fly (when the sensor is activated with a long touch on the top)
 -   Distance (when the sensor is activated with a long touch on the top)
+
 You receive unadulterated event data from the Nuimo for all these actions, with the exception of button press. 'Press' is actually triggered on 'Release' in order to implement the long-press app switcher function. This means you're unable to program your own button holding rules, but I hope this trade-off is a small price to pay for a nicer app switcher. Maybe down the track I'll program the option to change how the app switcher is invoked.
 
 ## Using the matrix node
