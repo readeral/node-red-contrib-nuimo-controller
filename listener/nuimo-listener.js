@@ -14,7 +14,6 @@ module.exports = function(RED) {
       this.activeApp = activeApp;
       this.data = data;
     }
-
     function payload(topic, activeApp, dataName, dataValue) {
       var msg = {};
       if (outputStyle == "payload") {

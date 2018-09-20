@@ -4,7 +4,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this,config);
     var node = this;
     var tempOption = 0;
-    var selectionMode;
+    var selectionMode = false;
 
 
     //
@@ -40,7 +40,9 @@ module.exports = function(RED) {
     //through, otherwise it receives app definitions and adds them to apps array
     this.on("input", function(msg) {
       if (msg.hasOwnProperty("image")) {
-        //Pushes new apps to apps array. Apps that duplicate an existign name are ignored
+        //Pushes new apps to apps array. Apps that duplicate an existing name
+        //are ignored.
+        //TODO identify and warn on deploying with duplicate images
         if (!apps.map((item) => item.name).includes(msg.name)) {
           apps.push(msg);
         }
@@ -73,6 +75,11 @@ module.exports = function(RED) {
     })
     nuimo.on("disconnected", () => {
       node.status({fill:"grey",shape:"ring",text:"disconnected"});
+      if (selectionMode == true) {
+        selectionMode = false;
+        clearInterval(flash);
+        setActiveApp(apps[0]);
+      };
     })
     function batteryStatus(batteryLevel) {
       if (batteryLevel <= 15) {
@@ -94,10 +101,13 @@ module.exports = function(RED) {
     //until a new app is selected
     //tempOption gets defined (as an integer) to tell the nuimo what to display
     nuimo.on("longPress", () => {
-      var initial = apps.filter(item => item.name == globalContext.get("activeApp").name)[0];
-      tempOption = (apps.indexOf(initial) < 0 ? 0 : apps.indexOf(initial));
-      setActiveApp("pending");
-      appSelectionMode(tempOption);
+      console.log(selectionMode);
+      if (selectionMode == false) {
+        var initial = apps.filter(item => item.name == globalContext.get("activeApp").name)[0];
+        tempOption = (apps.indexOf(initial) < 0 ? 0 : apps.indexOf(initial));
+        setActiveApp("pending");
+        appSelectionMode(tempOption);
+      }
     });
     function appSelectionMode(opt) {
       selectionMode = true;

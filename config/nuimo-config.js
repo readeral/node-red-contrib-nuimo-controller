@@ -1,24 +1,26 @@
 //Needs to 'hold' the bluetooth connection and expose it to the various 'normal' nodes
 
 module.exports = function(RED) {
+  let Timeout = require('../Timeout');
+  let Nuimo = require('nuimojs');
+
   function nuimoConfigNode(n) {
-      RED.nodes.createNode(this,n);
-      var globalContext = this.context().global;
-      var node = this;
+    RED.nodes.createNode(this, n);
+    var globalContext = this.context().global;
+    var node = this;
 
-      if (!globalContext.get("activeApp")) {
-        globalContext.set("activeApp", "pending");
-      }
-      var activeApp = globalContext.get("activeApp");
-      var sensitivity = globalContext.get("sensitivity") || [70, 800];
+    if (!globalContext.get("activeApp")) {
+      globalContext.set("activeApp", "pending");
+    }
+    var activeApp = globalContext.get("activeApp");
+    var sensitivity = globalContext.get("sensitivity") || [70, 800];
 
-      let Timeout = require('../Timeout');
-      let Nuimo = require('nuimojs'),
-      nuimo = new Nuimo();
+    var longPress;
+    console.log(n.nuimoOption);
+    nuimo = new Nuimo(n.nuimoOption);
 
-      var longPress;
-
-      nuimo.on("discover", (device) => {
+    nuimo.on("discover", (device) => {
+        console.log(device);
         node.writeMatrix = (instructions) => {
           device.setLEDMatrix(instructions.matrix, instructions.brightness, instructions.timeout, instructions.options);
         }
@@ -26,7 +28,6 @@ module.exports = function(RED) {
           activeApp = globalContext.get("activeApp");
         }
         device.on("connect", () => {
-          console.log(nuimo.getConnectedDevices());
           node.warn("Nuimo connected");
           node.emit('connected',device.batteryLevel);
         });
@@ -41,7 +42,7 @@ module.exports = function(RED) {
           longPress = Date.now();
           Timeout.set('extender', () => {
             device.setLEDMatrix([0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 256, 1000, {onionSkinning: true});
-          },400);
+          },200);
         });
         device.on("release", () => {
           Timeout.clear('extender');
@@ -106,12 +107,30 @@ module.exports = function(RED) {
 
       nuimo.scan();
 
-      node.on('close', function () {
-
-        nuimo.stop();
-        nuimo.removeAllListeners();
-        delete nuimo;
-      });
+    node.on('close', function() {
+      nuimo.stop();
+      nuimo.removeAllListeners();
+      delete nuimo;
+    });
   }
-  RED.nodes.registerType("nuimo-config",nuimoConfigNode);
+  RED.nodes.registerType("nuimo-config", nuimoConfigNode);
+
+  RED.httpAdmin.get('/nuimo/discover', RED.auth.needsPermission("nuimo-config.read"), function(req, res, next) {
+    this.nuimo = new Nuimo();
+    var devices = [];
+
+    this.nuimo.scan()
+    this.nuimo.on("discover", (device) => {
+      if (!devices.includes(device._peripheral.uuid)) {
+        devices.push(device._peripheral.uuid)
+      }
+    });
+    Timeout.set(complete, 5000)
+    function complete() {
+      this.nuimo.stop()
+      this.nuimo.removeAllListeners;
+      delete this.nuimo;
+      res.send(devices);
+    }
+  });
 }

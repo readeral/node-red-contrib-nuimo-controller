@@ -1,16 +1,64 @@
 <script type="text/javascript">
-    RED.nodes.registerType('nuimo-config',{
-        category: 'config',
-        defaults: {
-            name: {value: ""}
-        }
-    });
+  RED.nodes.registerType('nuimo-config', {
+    category: 'config',
+    defaults: {
+      name: {
+        value: ""
+      },
+      nuimoOption: {
+        value: ""
+      },
+      nuimouuid: {
+        value: ""
+      }
+    },
+    oneditprepare: function() {
+      var dropDown = document.getElementById("node-config-input-nuimoOption");
+      dropDown.addEventListener('change', function(e) {
+        document.getElementById('node-config-input-nuimouuid').value = dropDown.value;
+        this.device = dropDown.value;
+      });
+      var initial = document.createElement("option");
+      initial.value = "search";
+      initial.text = "Finding Nuimo devices";
+      dropDown.add(initial);
+
+      $.get('nuimo/discover')
+        .done(function(data) {
+          console.log(data);
+          dropDown.remove(0)
+          if (data.length <= 0) {
+            var failure = document.createElement("option");
+            failure.text = "No Nuimo devices were found"
+            dropDown.add(failure)
+          } else {
+            var choose = document.createElement("option");
+            choose.text = "Select a device";
+            choose.value = "";
+            choose.selected = "true"
+            dropDown.add(choose)
+            data.forEach(item => {
+              var element = document.createElement("option");
+              element.text = item;
+              element.value = item;
+              dropDown.add(element);
+            });
+          }
+        });
+    }
+  });
 </script>
 
-<script type="text/x-red"
-  data-template-name="nuimo-config">
-    <div class="form-row">
-        <label><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-config-input-name">
-    </div>
+<script type="text/x-red" data-template-name="nuimo-config">
+  <div class="form-row">
+    <label><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+  <div class="form-row">
+    <select id="node-config-input-nuimoOption"></select>
+  </div>
+  <div class="form-row">
+    <label><i class="fa fa-key"></i> Nuimo UUID</label>
+    <input type="text" id="node-config-input-nuimouuid" />
+  </div>
 </script>
